@@ -1,7 +1,9 @@
+import psycopg2
 import csv
 import datetime
 import math
 import sys
+import os
 from dataclasses import dataclass
 
 import flask
@@ -12,9 +14,17 @@ from sqlalchemy import (Boolean, Column, Integer, MetaData, String,
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.types import Date
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///server/enchantments.db"
+
+POSTGRES_USER = os.getenv("POSTGRES_USER", "user")
+POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "password")
+POSTGRES_DB = os.getenv("POSTGRES_DB", "kilo_db")
+POSTGRES_HOST = os.getenv("POSTGRES_HOST", "db")
+POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
+
+
+POSTGRES_URL = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}, echo=False
+    POSTGRES_URL
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
